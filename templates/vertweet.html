@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% block title %}oauth{% endblock %}
 {% block content %}
+
 	{% for tw in datos %}
   	<p>{{tw["text"]}}</p>
   	{%endfor%}
-
+  	{{datos}}
 {% endblock %}
