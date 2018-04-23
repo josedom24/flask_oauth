@@ -55,6 +55,20 @@ def twitter_callback():
     response.set_cookie("access_token_secret", access_token_secret.decode("utf-8"))
     redirect('/vertweet')  
 
+@app.route('/vertweet')
+def vertweet():
+    access_token=request.cookies.get("access_token")
+    access_token_secret=request.cookies.get("access_token_secret")
+    oauth = OAuth1(os.environ["CONSUMER_KEY"],
+                   client_secret=os.environ["CONSUMER_SECRET"],
+                   resource_owner_key=access_token,
+                   resource_owner_secret=access_token_secret)
+    url = 'https://api.twitter.com/1.1/statuses/home_timeline.json'
+    r = requests.post(url=url,auth=oauth)
+    if r.status_code == 200:
+        return render_template("vertweet.html",datos=r.text)        
+
+
 if __name__ == '__main__':
     port=os.environ["PORT"]
     app.run('0.0.0.0',int(port), debug=True)
