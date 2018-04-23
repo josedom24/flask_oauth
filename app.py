@@ -72,6 +72,13 @@ def vertweet():
     if r.status_code==200:
         return render_template("vertweet.html",datos=r.json())        
 
+@get('/twitter_logout')
+def twitter_logout():
+    plantilla=redirect('/twitter')  
+    response = app.make_response(plantilla) 
+    response.set_cookie("access_token",value='',expires=0)
+    response.set_cookie("access_token_secret", value='',expires=0)
+redirect('/twitter')
 
 if __name__ == '__main__':
     port=os.environ["PORT"]
