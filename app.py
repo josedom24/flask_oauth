@@ -1,4 +1,4 @@
-from flask import Flask,render_template
+from flask import Flask,render_template,redirect,request
 import requests
 from requests_oauthlib import OAuth1
 from urllib.parse import parse_qs
@@ -22,6 +22,18 @@ def get_request_token_oauth1():
     credentials = parse_qs(r.content)
     return credentials.get(b'oauth_token')[0],credentials.get(b'oauth_token_secret')[0]
 
+def get_access_token_oauth1(request_token,request_token_secret,verifier):
+    oauth = OAuth1(os.environ["CONSUMER_KEY"],
+                   client_secret=os.environ["CONSUMER_SECRET"],
+                   resource_owner_key=request_token,
+                   resource_owner_secret=request_token_secret,
+                   verifier=verifier,)
+  
+  
+  r = requests.post(url=ACCESS_TOKEN_URL, auth=oauth)
+  credentials = parse_qs(r.content)
+  return credentials.get(b'oauth_token')[0],credentials.get(b'oauth_token_secret')[0]
+
 @app.route('/twitter')
 def twitter():
     request_token,request_token_secret = get_request_token_oauth1()
@@ -33,6 +45,15 @@ def twitter():
     response.set_cookie('request_token_secret',value=request_token_secret.decode("utf-8"))
     return response
 
+@app.route('/callback_twitter')
+def callback_twitter():
+    request_token=request.cookies.get("request_token")
+    request_token_secret=request.cookies.get("request_token_secret")
+    verifier  = request.args.get("oauth_verifier")
+    access_token,access_token_secret= get_access_token_oauth1(request_token,request_token_secret,verifier)
+    response.set_cookie("access_token", access_token.decode("utf-8"))
+    response.set_cookie("access_token_secret", access_token_secret.decode("utf-8"))
+    redirect('/vertweet')  
 
 if __name__ == '__main__':
     port=os.environ["PORT"]
