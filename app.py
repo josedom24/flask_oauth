@@ -51,9 +51,11 @@ def twitter_callback():
     request_token_secret=request.cookies.get("request_token_secret")
     verifier  = request.args.get("oauth_verifier")
     access_token,access_token_secret= get_access_token_oauth1(request_token,request_token_secret,verifier)
+    plantilla=redirect('/vertweet')  
+    response = app.make_response(plantilla) 
     response.set_cookie("access_token", access_token.decode("utf-8"))
     response.set_cookie("access_token_secret", access_token_secret.decode("utf-8"))
-    redirect('/vertweet')  
+    return response
 
 @app.route('/vertweet')
 def vertweet():
