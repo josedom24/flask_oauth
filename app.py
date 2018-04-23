@@ -45,8 +45,8 @@ def twitter():
     response.set_cookie('request_token_secret',value=request_token_secret.decode("utf-8"))
     return response
 
-@app.route('/callback_twitter')
-def callback_twitter():
+@app.route('/twitter_callback')
+def twitter_callback():
     request_token=request.cookies.get("request_token")
     request_token_secret=request.cookies.get("request_token_secret")
     verifier  = request.args.get("oauth_verifier")
