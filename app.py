@@ -78,7 +78,7 @@ def twitter_logout():
     response = app.make_response(plantilla) 
     response.set_cookie("access_token",value='',expires=0)
     response.set_cookie("access_token_secret", value='',expires=0)
-redirect('/twitter')
+    return response
 
 if __name__ == '__main__':
     port=os.environ["PORT"]
