@@ -30,9 +30,9 @@ def get_access_token_oauth1(request_token,request_token_secret,verifier):
                    verifier=verifier,)
   
   
-  r = requests.post(url=ACCESS_TOKEN_URL, auth=oauth)
-  credentials = parse_qs(r.content)
-  return credentials.get(b'oauth_token')[0],credentials.get(b'oauth_token_secret')[0]
+    r = requests.post(url=ACCESS_TOKEN_URL, auth=oauth)
+    credentials = parse_qs(r.content)
+    return credentials.get(b'oauth_token')[0],credentials.get(b'oauth_token_secret')[0]
 
 @app.route('/twitter')
 def twitter():
