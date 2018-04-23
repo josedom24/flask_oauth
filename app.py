@@ -72,7 +72,7 @@ def vertweet():
     if r.status_code==200:
         return render_template("vertweet.html",datos=r.json())        
 
-@get('/twitter_logout')
+@app.route('/twitter_logout')
 def twitter_logout():
     plantilla=redirect('/twitter')  
     response = app.make_response(plantilla) 
