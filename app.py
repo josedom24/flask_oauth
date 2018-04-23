@@ -3,7 +3,7 @@ import requests
 from requests_oauthlib import OAuth1
 from urllib.parse import parse_qs
 import os
-app = Flask(__name__)	
+app = Flask(__name__)   
 
 REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token"
 AUTHENTICATE_URL = "https://api.twitter.com/oauth/authenticate?oauth_token="
@@ -11,7 +11,7 @@ ACCESS_TOKEN_URL = "https://api.twitter.com/oauth/access_token"
 
 @app.route('/')
 def inicio():
-	return render_template("inicio.html")
+    return render_template("inicio.html")
 
 ## oauth1
 
@@ -24,9 +24,16 @@ def get_request_token_oauth1():
 
 @app.route('/twitter')
 def twitter():
-	request_token,request_token_secret = get_request_token_oauth1()
-	print(request_token,request_token_secret)
+    request_token,request_token_secret = get_request_token_oauth1()
+    authorize_url = AUTHENTICATE_URL + request_token.decode("utf-8")
+    print(authorize_url)
+    plantilla=render_template("oauth1.html",authorize_url=authorize_url)
+    response = app.make_response(plantilla)  
+    response.set_cookie('request_token',value=request_token.decode("utf-8"))
+    response.set_cookie('request_token_secret',value=request_token_secret.decode("utf-8"))
+    return response
+
 
 if __name__ == '__main__':
-	port=os.environ["PORT"]
-	app.run('0.0.0.0',int(port), debug=True)
+    port=os.environ["PORT"]
+    app.run('0.0.0.0',int(port), debug=True)
