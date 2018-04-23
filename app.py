@@ -16,19 +16,14 @@ def inicio():
 ## oauth1
 
 def get_request_token_oauth1():
-    print(os.environ["CONSUMER_KEY"])
-    print(os.environ["CONSUMER_SECRET"])
     oauth = OAuth1(os.environ["CONSUMER_KEY"],
-                   client_secret=os.environ["CONSUMER_SECRET"])
-    print(REQUEST_TOKEN_URL)
+                  client_secret=os.environ["CONSUMER_SECRET"])
     r = requests.post(url=REQUEST_TOKEN_URL, auth=oauth)
-    print(r)
     credentials = parse_qs(r.content)
-    print (credentials)
-    return credentials.get('oauth_token')[0],credentials.get('oauth_token_secret')[0]
+    return credentials.get(b'oauth_token')[0],credentials.get(b'oauth_token_secret')[0]
 
 @app.route('/twitter')
-def twutter():
+def twitter():
 	request_token,request_token_secret = get_request_token_oauth1()
 	print(request_token,request_token_secret)
 
