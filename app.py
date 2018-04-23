@@ -68,7 +68,7 @@ def vertweet():
                    resource_owner_key=access_token,
                    resource_owner_secret=access_token_secret)
     url = 'https://api.twitter.com/1.1/statuses/home_timeline.json'
-    r = requests.post(url=url,auth=oauth)
+    r = requests.get(url=url,auth=oauth)
     return render_template("vertweet.html",datos=r.text)        
 
 
