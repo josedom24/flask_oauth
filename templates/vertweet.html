@@ -4,12 +4,13 @@
 	{% for tw in datos %}
 	<div class="card">
   <div class="card-header">
-    {{tw["user"]["name"]}}
+    <strong>{{tw["user"]["name"]}}</strong>
   </div>
   <div class="card-body">
         <p class="card-text">{{tw["text"]}}</p>
     </div>
   </div>
+  <br/>
   {%endfor%}
 <a href="/twitter_logout">Salir</a>
 {% endblock %}
