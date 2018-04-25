@@ -2,8 +2,14 @@
 {% block title %}oauth{% endblock %}
 {% block content %}
 	{% for tw in datos %}
-	<p>{{tw["user"]["name"]}}
-  	<p>{{tw["text"]}}</p>
-  	{%endfor%}
+	<div class="card">
+  <div class="card-header">
+    {{tw["user"]["name"]}}
+  </div>
+  <div class="card-body">
+        <p class="card-text">{{tw["text"]}}</p>
+    </div>
+  </div>
+
 <a href="/twitter_logout">Salir</a>
 {% endblock %}
