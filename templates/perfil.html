@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}oauth{% endblock %}
 {% block content %}
-	<p>%s</p><img src="%s"/><br/><a href="/logout">Cerrar</a>' % (doc["name"],doc["picture"])
+	{{doc}}
+	<p>{{doc["name"]}}</p><img src="{{doc["picture"]}}"/><br/><a href="/logout">Cerrar</a>
 {% endblock %}
