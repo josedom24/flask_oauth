@@ -80,7 +80,7 @@ token_url = "https://accounts.google.com/o/oauth2/token"
 
 @app.route('/google')
 def google():
-    return render_template("oauth2.html",authorize_url=authorize_url)
+    return render_template("oauth2.html")
  
 def token_valido():
     token=request.cookies.get("token")
