@@ -84,10 +84,11 @@ def google():
     return render_template("oauth2.html")
  
 def token_valido():
+    
     try:
         token=json.loads(request.cookies.get("token"))
     except:
-        pass
+        token = False
     if token:
         token_ok = True
         try:
