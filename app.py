@@ -73,13 +73,6 @@ def vertweet():
     else:
         return redirect("/twitter")
 
-@app.route('/twitter_logout')
-def twitter_logout():
-    plantilla=redirect('/twitter')  
-    response = app.make_response(plantilla) 
-    response.set_cookie("access_token",value='',expires=0)
-    response.set_cookie("access_token_secret", value='',expires=0)
-    return response
 
 if __name__ == '__main__':
     port=os.environ["PORT"]
