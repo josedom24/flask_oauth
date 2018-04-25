@@ -71,7 +71,7 @@ def vertweet():
     r = requests.get(url=url,auth=oauth)
     if r.status_code==200:
         return render_template("vertweet.html",datos=r.json())
-    else
+    else:
         return redirec("/twitter")
 
 @app.route('/twitter_logout')
