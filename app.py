@@ -3,7 +3,7 @@ import requests
 from requests_oauthlib import OAuth1
 from requests_oauthlib import OAuth2Session
 from urllib.parse import parse_qs
-import os
+import os,json
 app = Flask(__name__)   
 
 REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token"
@@ -84,7 +84,7 @@ def google():
     return render_template("oauth2.html")
  
 def token_valido():
-    token=request.cookies.get("token")
+    token=json.loads(request.cookies.get("token"))
     if token:
         token_ok = True
         try:
@@ -117,13 +117,13 @@ def get_token():
     token = oauth2.fetch_token(token_url, client_secret=os.environ["client_secret"],authorization_response=request.url[:4]+"s"+request.url[4:])
     plantilla=redirect("/perfil_usuario")
     response = app.make_response(plantilla) 
-    response.set_cookie("token", value=token.decode("utf-8"))
+    response.set_cookie("token",value=json.dumps(token))
     return response
 
 @app.route('/perfil_usuario')
 def info_perfil_usuario():
     if token_valido():
-        token=request.cookies.get("token")
+        token=json.loads(request.cookies.get("token"))
         oauth2 = OAuth2Session(os.environ["client_id"], token=token)
         r = oauth2.get('https://www.googleapis.com/oauth2/v1/userinfo')
         doc=json.loads(r.content)
