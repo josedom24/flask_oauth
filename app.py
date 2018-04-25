@@ -84,7 +84,6 @@ def google():
     return render_template("oauth2.html")
  
 def token_valido():
-    
     try:
         token=json.loads(request.cookies.get("token"))
     except:
@@ -102,7 +101,6 @@ def token_valido():
 
 @app.route('/perfil')
 def info_perfil():
-  print(request.url)  
   if token_valido():
     redirect("/perfil_usuario")
   else:
@@ -116,7 +114,6 @@ def info_perfil():
 
 @app.route('/google_callback')
 def get_token():
-    print(request.url)
     oauth2 = OAuth2Session(os.environ["client_id"], state=request.cookies.get("oauth_state"),redirect_uri=redirect_uri)
     token = oauth2.fetch_token(token_url, client_secret=os.environ["client_secret"],authorization_response=request.url[:4]+"s"+request.url[4:])
     plantilla=redirect("/perfil_usuario")
