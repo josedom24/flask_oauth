@@ -102,7 +102,7 @@ def token_valido():
 @app.route('/perfil')
 def info_perfil():
   if token_valido():
-    redirect("/perfil_usuario")
+    return redirect("/perfil_usuario")
   else:
     oauth2 = OAuth2Session(os.environ["client_id"], redirect_uri=redirect_uri,scope=scope)
     authorization_url, state = oauth2.authorization_url('https://accounts.google.com/o/oauth2/auth')
@@ -130,7 +130,7 @@ def info_perfil_usuario():
         doc=json.loads(r.content)
         return render_template("perfil.html", datos=doc)
     else:
-        redirect('/perfil')
+        return redirect('/perfil')
 
 @app.route('/logout')
 def salir():
