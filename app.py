@@ -31,9 +31,7 @@ def get_access_token_oauth1(request_token,request_token_secret,verifier):
   
       
     r = requests.post(url=ACCESS_TOKEN_URL, auth=oauth)
-    print(r)
     credentials = parse_qs(r.content)
-    print(credentials)
     return credentials.get(b'oauth_token')[0],credentials.get(b'oauth_token_secret')[0]
 
 @app.route('/twitter')
@@ -73,6 +71,63 @@ def vertweet():
     else:
         return redirect("/twitter")
 
+
+#### Oauth2
+
+redirect_uri = 'https://oauth-jd.herokuapp.com/google_callback'
+scope = ['https://www.googleapis.com/auth/userinfo.profile']
+token_url = "https://accounts.google.com/o/oauth2/token"
+
+@app.route('/google')
+def google():
+    return render_template("oauth2.html",authorize_url=authorize_url)
+ 
+def token_valido():
+    token=request.cookies.get("token")
+    if token:
+        token_ok = True
+        try:
+            oauth2 = OAuth2Session(os.environ["client_id"], token=token)
+            r = oauth2.get('https://www.googleapis.com/oauth2/v1/userinfo')
+        except TokenExpiredError as e:
+            token_ok = False
+    else:
+        token_ok = False
+    return token_ok
+
+@app.route('/perfil')
+def info_perfil():
+  if token_valido():
+    redirect("/perfil_usuario")
+  else:
+    oauth2 = OAuth2Session(os.environ["client_id"], redirect_uri=redirect_uri,scope=scope)
+    authorization_url, state = oauth2.authorization_url('https://accounts.google.com/o/oauth2/auth')
+    plantilla=redirect(authorization_url)  
+    response = app.make_response(plantilla) 
+    response.set_cookie("token", value="",expires=0)
+    response.set_cookie("oauth_state", value=state)
+    return response
+
+@app.route('/google_callback')
+def get_token():
+
+    oauth2 = OAuth2Session(os.environ["client_id"], state=request.cookies.get("oauth_state"),redirect_uri=redirect_uri)
+    token = oauth2.fetch_token(token_url, client_secret=os.environ["client_secret"],authorization_response=request.url)
+    plantilla=redirect("/perfil_usuario")
+    response = app.make_response(plantilla) 
+    response.set_cookie("token", value=token)
+    return response
+
+@app.route('/perfil_usuario')
+def info_perfil_usuario():
+    if token_valido():
+        token=request.cookies.get("token")
+        oauth2 = OAuth2Session(os.environ["client_id"], token=token)
+        r = oauth2.get('https://www.googleapis.com/oauth2/v1/userinfo')
+        doc=json.loads(r.content)
+        return '<p>%s</p><img src="%s"/><br/><a href="/logout">Cerrar</a>' % (doc["name"],doc["picture"])
+  else:
+        redirect('/perfil')
 
 if __name__ == '__main__':
     port=os.environ["PORT"]
