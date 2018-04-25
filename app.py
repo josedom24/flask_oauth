@@ -70,7 +70,9 @@ def vertweet():
     url = 'https://api.twitter.com/1.1/statuses/home_timeline.json'
     r = requests.get(url=url,auth=oauth)
     if r.status_code==200:
-        return render_template("vertweet.html",datos=r.json())        
+        return render_template("vertweet.html",datos=r.json())
+    else
+        return redirec("/twitter")
 
 @app.route('/twitter_logout')
 def twitter_logout():
