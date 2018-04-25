@@ -114,7 +114,7 @@ def info_perfil():
 def get_token():
     print(request.url)
     oauth2 = OAuth2Session(os.environ["client_id"], state=request.cookies.get("oauth_state"),redirect_uri=redirect_uri)
-    token = oauth2.fetch_token(token_url, client_secret=os.environ["client_secret"],authorization_response=request.url)
+    token = oauth2.fetch_token(token_url, client_secret=os.environ["client_secret"],authorization_response=request.url[:4]+"s"+request.url[4:])
     plantilla=redirect("/perfil_usuario")
     response = app.make_response(plantilla) 
     response.set_cookie("token", value=token)
