@@ -2,6 +2,7 @@
 {% block title %}oauth{% endblock %}
 {% block content %}
 	<h1>OAuth 1</h1>
+  <a href="{{authorize_url}}"><button type="button" class="btn btn-primary btn-sm">Ver tu Twitter</button></a>
   	<p>Vamos a usar la API de twitter con autentificación oauth1</p>
     <a href="http://laxmarcaellugar.blogspot.com.es/2011/08/el-protocolo-de-autenticacion-oauth_08.html">Flujo oauth1</a>
   	<ul>
@@ -119,5 +120,5 @@
         redirect('/twitter')
     </pre>
   	</ul>
-<a href="{{authorize_url}}">Comenzar a twitterar</a>
+
 {% endblock %}

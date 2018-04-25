@@ -1,45 +1,56 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>OAuth</title>
 
-<head>
-  <title>{% block title %}{% endblock %}</title>
-  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-  <link rel="stylesheet" type="text/css" href="{{url_for("static", filename='css/style.css')}}">
-</head>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  </head>
 
-<body>
-  <div id="main">
-    <div id="header">
-      <div id="logo">
-        <h1>Curso de <span class="alternate_colour">Flask</span></h1>
-      </div>
-      <div id="menubar">
-        <ul id="menu">
-          <!-- put class="tab_selected" in the li tag for the selected page - to highlight which page you're on -->
-          <li class="tab_selected"><a href="/">Home</a></li>
-          <li><a href="#">Flask</a></li>
-          <li><a href="#">OpenWebeninars</a></li>
-          
+  <body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="#">Oauth</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#">OAuth v1</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Oauth v2</a>
+          </li>
         </ul>
+ 
       </div>
-    </div>
-    <div id="site_content">
-      <div id="panel"><img src="{{url_for("static", filename='css/panel.png')}}" alt="tree tops" /></div>
-      <div class="sidebar">
-        <!-- insert your sidebar items here -->
-        <h1>Blogroll</h1>
-        <ul>
-          <li><a href="#">Flask</a></li>
-          <li><a href="#">Python3</a></li>
-          <li><a href="#">OpenWeninars</a></li>
-        </ul>
-        
+    </nav>
+
+    <main role="main" class="container">
+
+      <div class="jumbotron">
+        <h1>Ejemplos de autorización OAuth con Python3</h1>
       </div>
-      <div id="content">
-        {% block content %}{% endblock %}
-        </div>
-    </div>
-    <div id="footer">Copyright &copy; Company Name. All Rights Reserved. | <a href="http://validator.w3.org/check?uri=referer">XHTML</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | <a href="http://www.dcarter.co.uk">design by dcarter</a></div>
-  </div>
-<div style="text-align: center; font-size: 0.75em;">Diseño descargado desde <a href="http://www.misplantillas.com/">plantillas web gratis</a>.</div></body>
+      <div class="container-fluid">
+      	
+      {% block content %}{% endblock %}
+ 
+
+	</div>
+    </main><!-- /.container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+  </body>
 </html>
+
