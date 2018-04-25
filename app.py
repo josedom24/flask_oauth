@@ -40,7 +40,6 @@ def get_access_token_oauth1(request_token,request_token_secret,verifier):
 def twitter():
     request_token,request_token_secret = get_request_token_oauth1()
     authorize_url = AUTHENTICATE_URL + request_token.decode("utf-8")
-    print(authorize_url)
     plantilla=render_template("oauth1.html",authorize_url=authorize_url)
     response = app.make_response(plantilla)  
     response.set_cookie('request_token',value=request_token.decode("utf-8"))
@@ -78,8 +77,6 @@ def vertweet():
 def twitter_logout():
     plantilla=redirect('/twitter')  
     response = app.make_response(plantilla) 
-    response.set_cookie("request_token",value='',expires=0)
-    response.set_cookie("request_token_secret", value='',expires=0)
     response.set_cookie("access_token",value='',expires=0)
     response.set_cookie("access_token_secret", value='',expires=0)
     return response
