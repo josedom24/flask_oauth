@@ -127,9 +127,17 @@ def info_perfil_usuario():
         oauth2 = OAuth2Session(os.environ["client_id"], token=token)
         r = oauth2.get('https://www.googleapis.com/oauth2/v1/userinfo')
         doc=json.loads(r.content)
-        return '<p>%s</p><img src="%s"/><br/><a href="/logout">Cerrar</a>' % (doc["name"],doc["picture"])
+        return render_template("perfil.html", datos=doc)
     else:
         redirect('/perfil')
+
+@app.route('/logout')
+def salir():
+    plantilla=redirect("/perfil")
+    response = app.make_response(plantilla) 
+    response.set_cookie("token",value="",expires=0)
+    return response  
+  
 
 if __name__ == '__main__':
     port=os.environ["PORT"]
