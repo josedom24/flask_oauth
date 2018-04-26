@@ -1,4 +1,4 @@
-from flask import Flask,render_template,redirect,request
+from flask import Flask,render_template,redirect,request,session
 import requests
 from requests_oauthlib import OAuth1
 from requests_oauthlib import OAuth2Session
@@ -39,16 +39,21 @@ def get_access_token_oauth1(request_token,request_token_secret,verifier):
 def twitter():
     request_token,request_token_secret = get_request_token_oauth1()
     authorize_url = AUTHENTICATE_URL + request_token.decode("utf-8")
-    plantilla=render_template("oauth1.html",authorize_url=authorize_url)
-    response = app.make_response(plantilla)  
-    response.set_cookie('request_token',value=request_token.decode("utf-8"))
-    response.set_cookie('request_token_secret',value=request_token_secret.decode("utf-8"))
-    return response
+    #plantilla=render_template("oauth1.html",authorize_url=authorize_url)
+#    response = app.make_response(plantilla)  
+#    response.set_cookie('request_token',value=request_token.decode("utf-8"))
+#    response.set_cookie('request_token_secret',value=request_token_secret.decode("utf-8"))
+#    return response
+     session["request_token"]=request_token.decode("utf-8")
+     session["request_token_secret"]=request_token_secret.decode("utf-8")
+     return render_template("oauth1.html",authorize_url=authorize_url)
 
 @app.route('/twitter_callback')
 def twitter_callback():
-    request_token=request.cookies.get("request_token")
-    request_token_secret=request.cookies.get("request_token_secret")
+    #request_token=request.cookies.get("request_token")
+    #request_token_secret=request.cookies.get("request_token_secret")
+    request_token=session["request_token"]
+    request_token_secret=session["request_token_secret"]
     verifier  = request.args.get("oauth_verifier")
     access_token,access_token_secret= get_access_token_oauth1(request_token,request_token_secret,verifier)
     plantilla=redirect('/vertweet')  
