@@ -41,33 +41,24 @@ def get_access_token_oauth1(request_token,request_token_secret,verifier):
 def twitter():
     request_token,request_token_secret = get_request_token_oauth1()
     authorize_url = AUTHENTICATE_URL + request_token.decode("utf-8")
-    #plantilla=render_template("oauth1.html",authorize_url=authorize_url)
-#    response = app.make_response(plantilla)  
-#    response.set_cookie('request_token',value=request_token.decode("utf-8"))
-#    response.set_cookie('request_token_secret',value=request_token_secret.decode("utf-8"))
-#    return response
     session["request_token"]=request_token.decode("utf-8")
     session["request_token_secret"]=request_token_secret.decode("utf-8")
     return render_template("oauth1.html",authorize_url=authorize_url)
 
 @app.route('/twitter_callback')
 def twitter_callback():
-    #request_token=request.cookies.get("request_token")
-    #request_token_secret=request.cookies.get("request_token_secret")
     request_token=session["request_token"]
     request_token_secret=session["request_token_secret"]
     verifier  = request.args.get("oauth_verifier")
     access_token,access_token_secret= get_access_token_oauth1(request_token,request_token_secret,verifier)
-    plantilla=redirect('/vertweet')  
-    response = app.make_response(plantilla) 
-    response.set_cookie("access_token", access_token.decode("utf-8"))
-    response.set_cookie("access_token_secret", access_token_secret.decode("utf-8"))
-    return response
+    session["access_token"]= access_token.decode("utf-8")
+    session["access_token_secret"]= access_token_secret.decode("utf-8")
+    return redirect('/vertweet')
 
 @app.route('/vertweet')
 def vertweet():
-    access_token=request.cookies.get("access_token")
-    access_token_secret=request.cookies.get("access_token_secret")
+    access_token=session["access_token"]
+    access_token_secret=session["access_token_secret"]
     oauth = OAuth1(os.environ["CONSUMER_KEY"],
                    client_secret=os.environ["CONSUMER_SECRET"],
                    resource_owner_key=access_token,
@@ -92,7 +83,7 @@ def google():
  
 def token_valido():
     try:
-        token=json.loads(request.cookies.get("token"))
+        token=json.loads(session["token"])
     except:
         token = False
     if token:
@@ -113,25 +104,21 @@ def info_perfil():
   else:
     oauth2 = OAuth2Session(os.environ["client_id"], redirect_uri=redirect_uri,scope=scope)
     authorization_url, state = oauth2.authorization_url('https://accounts.google.com/o/oauth2/auth')
-    plantilla=redirect(authorization_url)  
-    response = app.make_response(plantilla) 
-    response.set_cookie("token", value="",expires=0)
-    response.set_cookie("oauth_state", value=state)
-    return response
+    session.pop("token",None)
+    session["oauth_state"]=state
+    return redirect(authorization_url)  
 
 @app.route('/google_callback')
 def get_token():
-    oauth2 = OAuth2Session(os.environ["client_id"], state=request.cookies.get("oauth_state"),redirect_uri=redirect_uri)
+    oauth2 = OAuth2Session(os.environ["client_id"], state=session["oauth_state"],redirect_uri=redirect_uri)
     token = oauth2.fetch_token(token_url, client_secret=os.environ["client_secret"],authorization_response=request.url[:4]+"s"+request.url[4:])
-    plantilla=redirect("/perfil_usuario")
-    response = app.make_response(plantilla) 
-    response.set_cookie("token",value=json.dumps(token))
-    return response
+    session["token"]=json.dumps(token)
+    return redirect("/perfil_usuario")
 
 @app.route('/perfil_usuario')
 def info_perfil_usuario():
     if token_valido():
-        token=json.loads(request.cookies.get("token"))
+        token=json.loads(session["token"])
         oauth2 = OAuth2Session(os.environ["client_id"], token=token)
         r = oauth2.get('https://www.googleapis.com/oauth2/v1/userinfo')
         doc=json.loads(r.content)
@@ -141,10 +128,8 @@ def info_perfil_usuario():
 
 @app.route('/logout')
 def salir():
-    plantilla=redirect("/perfil")
-    response = app.make_response(plantilla) 
-    response.set_cookie("token",value="",expires=0)
-    return response  
+    session.pop("token",None)
+    return redirect("/perfil")
   
 
 if __name__ == '__main__':

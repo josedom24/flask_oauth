@@ -20,7 +20,7 @@
         
         def token_valido():
           try:
-            token=json.loads(request.cookies.get("token"))
+            token=json.loads(session["token"])
           except:
             token = False
           if token:
@@ -42,11 +42,9 @@
             else:
               oauth2 = OAuth2Session(os.environ["client_id"], redirect_uri=redirect_uri,scope=scope)
               authorization_url, state = oauth2.authorization_url('https://accounts.google.com/o/oauth2/auth')
-              plantilla=redirect(authorization_url)  
-              response = app.make_response(plantilla) 
-              response.set_cookie("token", value="",expires=0)
-              response.set_cookie("oauth_state", value=state)
-              return response
+              session.pop("token",None)
+              session["oauth_state"]=state
+              return redirect(authorization_url)  
                 </pre>
       <li>Una vez que hemos autorizado a que la aplicación haga uso de los datos de google con un determinado usuario, google llama la callback URL, donde utilizando la información enviada en esta llamada podemos obtener nuestro token de acceso.</li>
       <pre>
@@ -54,17 +52,15 @@
       def get_token():
         oauth2 = OAuth2Session(os.environ["client_id"], state=request.cookies.get("oauth_state"),redirect_uri=redirect_uri)
         token = oauth2.fetch_token(token_url, client_secret=os.environ["client_secret"],authorization_response=request.url[:4]+"s"+request.url[4:])
-        plantilla=redirect("/perfil_usuario")
-        response = app.make_response(plantilla) 
-        response.set_cookie("token",value=json.dumps(token))
-        return response
+        session["token"]=json.dumps(token)
+        return redirect("/perfil_usuario")
       </pre>
       <li>Finalmente puedo usar la API utilizando el token que hemos obtenido anteriormente.</li>
       <pre>
       @app.route('/perfil_usuario')
       def info_perfil_usuario():
         if token_valido():
-          token=json.loads(request.cookies.get("token"))
+          token=json.loads(session["token"])
           oauth2 = OAuth2Session(os.environ["client_id"], token=token)
           r = oauth2.get('https://www.googleapis.com/oauth2/v1/userinfo')
           doc=json.loads(r.content)

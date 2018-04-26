@@ -20,11 +20,9 @@
           def twitter():
             request_token,request_token_secret = get_request_token_oauth1()
             authorize_url = AUTHENTICATE_URL + request_token.decode("utf-8")
-            plantilla=render_template("oauth1.html",authorize_url=authorize_url)
-            response = app.make_response(plantilla)  
-            response.set_cookie('request_token',value=request_token.decode("utf-8"))
-            response.set_cookie('request_token_secret',value=request_token_secret.decode("utf-8"))
-            return response
+            session["request_token"]=request_token.decode("utf-8")
+            session["request_token_secret"]=request_token_secret.decode("utf-8")
+            return render_template("oauth1.html",authorize_url=authorize_url)
           		</pre>
 
   		<li>Una vez que nos hemos autentificado de forma adecuada la aplicación (en este caso twitter) nos devuelve a la Callback URL (http://oauth-jd.herokuapp.com/twitter_callback) donde cogemos un token de verificación que nos permitirá a continuación obtener los tokens de acceso (ACCESS_TOKEN,ACCESS_TOKEN_SECRET)</li>
@@ -41,22 +39,20 @@
 
        @app.route('/twitter_callback')
        def twitter_callback():
-          request_token=request.cookies.get("request_token")
-          request_token_secret=request.cookies.get("request_token_secret")
+          request_token=session["request_token"]
+          request_token_secret=session["request_token_secret"]
           verifier  = request.args.get("oauth_verifier")
           access_token,access_token_secret= get_access_token_oauth1(request_token,request_token_secret,verifier)
-          plantilla=redirect('/vertweet')  
-          response = app.make_response(plantilla) 
-          response.set_cookie("access_token", access_token.decode("utf-8"))
-          response.set_cookie("access_token_secret", access_token_secret.decode("utf-8"))
-          return response
+          session["access_token"]= access_token.decode("utf-8")
+          session["access_token_secret"]= access_token_secret.decode("utf-8")
+          return redirect('/vertweet')
       </pre>
       <li>Cuando tenemos los tokens de acceso, ya podemos ver los tweets de nuestro usuario, haciendo la petición correspondiente:
         <pre>
           @app.route('/vertweet')
           def vertweet():
-              access_token=request.cookies.get("access_token")
-              access_token_secret=request.cookies.get("access_token_secret")
+              access_token=session["access_token"]
+              access_token_secret=session["access_token_secret"]
               oauth = OAuth1(os.environ["CONSUMER_KEY"],
                    client_secret=os.environ["CONSUMER_SECRET"],
                    resource_owner_key=access_token,
