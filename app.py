@@ -191,7 +191,7 @@ def info_perfil_usuario_spotify():
 @app.route('/logout_spotify')
 def salir_spotify():
     session.pop("token_sp",None)
-    return redirect("/perfil_spotify")
+    return redirect("/spotify")
 
 if __name__ == '__main__':
     port=os.environ["PORT"]
